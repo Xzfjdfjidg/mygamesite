@@ -140,3 +140,15 @@
 
     fetchAllNews();
   </script>
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase().trim();
+        const filtered = allArticles.filter(a => 
+          (a.title && a.title.toLowerCase().includes(val)) || 
+          (a.description && a.description.toLowerCase().includes(val))
+        );
+        // نعيد عرض الأخبار المفلترة فقط بدون ما نغز ترجمة قوقل مع كل حرف
+        renderNews(filtered);
+      });
+    }
