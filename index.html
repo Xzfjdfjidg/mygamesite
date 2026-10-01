@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ملعب | شبكة أخبار الألعاب والمنصات الشاملة</title>
+  <title>ملعب | المركز الإخباري الشامل للألعاب</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #4f46e5;
@@ -22,7 +22,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Cairo', sans-serif;
+      font-family: 'Cairo', 'Inter', sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -34,7 +34,7 @@
       top: 0;
       z-index: 100;
       border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
@@ -44,23 +44,30 @@
     }
 
     .logo {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: var(--text);
       text-decoration: none;
     }
     .logo span { color: var(--primary); }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
     .search-box input {
       background: #f1f5f9;
       border: 1px solid var(--border);
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1rem;
       border-radius: 20px;
       color: var(--text);
       font-family: inherit;
       width: 100%;
-      max-width: 320px;
-      font-size: 0.95rem;
+      min-width: 220px;
+      font-size: 0.9rem;
       outline: none;
       transition: all 0.2s;
     }
@@ -68,6 +75,35 @@
       background: #ffffff;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* قائمة اختيار اللغة الصغيرة على اليسار */
+    .lang-switcher {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-family: inherit;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .lang-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
     main {
@@ -135,7 +171,7 @@
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 0.6rem;
       line-height: 1.4;
@@ -160,109 +196,169 @@
 <body>
 
   <header>
-    <a href="#" class="logo">🎮 ملعب <span>للألعاب</span></a>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="ابحث عن GTA 6، سوني، إكس بوكس...">
+    <a href="#" class="logo" id="logoText">🎮 ملعب <span>الأخبار</span></a>
+    
+    <div class="header-actions">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="ابحث عن الأخبار...">
+      </div>
+
+      <!-- مربعات اختيارات اللغة الجانبية -->
+      <div class="lang-switcher">
+        <button class="lang-btn active" id="btnAr" onclick="setLanguage('ar')">عربي</button>
+        <button class="lang-btn" id="btnEn" onclick="setLanguage('en')">ENGLISH</button>
+      </div>
     </div>
   </header>
 
   <main>
-    <div id="loader" class="loader">⏳ جاري جلب أحدث أخبار الألعاب وسوني وإكس بوكس باللغة العربية...</div>
+    <div id="loader" class="loader">⏳ جاري تحميل الأخبار وتجهيز المحتوى...</div>
     <div class="news-grid" id="newsGrid"></div>
   </main>
 
   <script>
-    // مصادر الأخبار الشاملة
     const FEEDS = [
       'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.ign.com%2Frss%2Farticles%2Ffeed%3Ftags%3Dgaming',
       'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.xbox.com%2Fen-us%2Ffeed%2F',
       'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fblog.playstation.com%2Ffeed%2F'
     ];
 
+    let currentLang = 'ar';
     let allArticles = [];
 
-    // قاموس ترجمة وتعرِيب العناوين والمفاهيم الشائعة تلقائياً للعربية
-    function translateToArabic(text) {
+    // نصوص الواجهة
+    const uiText = {
+      ar: {
+        logo: '🎮 ملعب <span>الأخبار</span>',
+        placeholder: 'ابحث عن GTA 6، سوني، إكس بوكس...',
+        loading: '⏳ جاري جلب وترجمة الأخبار إلى العربية الفصحى تلقائياً...',
+        noResults: 'لا توجد أخبار مطابقة لبحثك.',
+        sources: { xbox: 'إكس بوكس', ps: 'بلايستيشن', global: 'ألعاب عالمية' }
+      },
+      en: {
+        logo: '🎮 Malab <span>Gaming</span>',
+        placeholder: 'Search GTA 6, Sony, Xbox...',
+        loading: '⏳ Loading live gaming news...',
+        noResults: 'No news matching your search.',
+        sources: { xbox: 'Xbox', ps: 'PlayStation', global: 'Global Gaming' }
+      }
+    };
+
+    async function translateText(text) {
       if (!text) return '';
-      return text
-        .replace(/Grand Theft Auto VI/gi, "جراند ثيفت أوتو 6 (GTA 6)")
-        .replace(/Grand Theft Auto 6/gi, "جراند ثيفت أوتو 6 (GTA 6)")
-        .replace(/GTA VI/gi, "GTA 6")
-        .replace(/PlayStation/gi, "بلايستيشن")
-        .replace(/Xbox Series X\|S/gi, "إكس بوكس سيريس")
-        .replace(/Xbox/gi, "إكس بوكس")
-        .replace(/Rockstar Games/gi, "روكستار جيمز")
-        .replace(/Release Date/gi, "موعد الإطلاق")
-        .replace(/Trailer/gi, "العرض الرسمي")
-        .replace(/Update/gi, "تحديث")
-        .replace(/Announcement/gi, "إعلان رسمي")
-        .replace(/New Game/gi, "لعبة جديدة")
-        .replace(/Leaks/gi, "تسريبات")
-        .replace(/Leaked/gi, "مسربة");
+      try {
+        const cleanText = text.replace(/<[^>]*>?/gm, '').substring(0, 180);
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(cleanText)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data[0].map(item => item[0]).join('');
+      } catch (e) {
+        return text;
+      }
     }
 
     async function fetchAllNews() {
       const loader = document.getElementById('loader');
+      loader.innerHTML = uiText[currentLang].loading;
 
       try {
         const requests = FEEDS.map(url => fetch(url).then(res => res.json()));
         const results = await Promise.all(requests);
 
+        let rawArticles = [];
         results.forEach((data, index) => {
           if (data.status === 'ok') {
-            const sourceName = index === 1 ? 'إكس بوكس' : index === 2 ? 'بلايستيشن (سوني)' : 'ألعاب عالمية';
-            const items = data.items.map(item => ({
-              ...item,
-              source: sourceName,
-              titleAr: translateToArabic(item.title),
-              snippetAr: translateToArabic(item.description.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...')
-            }));
-            allArticles = allArticles.concat(items);
+            const srcKey = index === 1 ? 'xbox' : index === 2 ? 'ps' : 'global';
+            const items = data.items.map(item => ({ ...item, srcKey }));
+            rawArticles = rawArticles.concat(items);
           }
         });
 
-        // ترتيب الأخبار من الأحدث إلى الأقدم
-        allArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+        rawArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+        const topArticles = rawArticles.slice(0, 15);
+
+        allArticles = await Promise.all(topArticles.map(async (item) => {
+          const cleanSnippetEn = item.description.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
+          const translatedTitle = await translateText(item.title);
+          const translatedSnippet = await translateText(item.description);
+          return {
+            ...item,
+            titleEn: item.title,
+            snippetEn: cleanSnippetEn,
+            titleAr: translatedTitle,
+            snippetAr: translatedSnippet + '...'
+          };
+        }));
 
         loader.style.display = 'none';
         renderNews(allArticles);
       } catch (err) {
-        loader.textContent = 'تعذر جلب الأخبار، يرجى إعادة تحديث الصفحة.';
+        loader.textContent = currentLang === 'ar' ? 'تعذر جلب الأخبار، يرجى إعادة التحديث.' : 'Failed to load news, please refresh.';
       }
     }
 
     function renderNews(items) {
       const grid = document.getElementById('newsGrid');
       if (items.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">لا توجد أخبار مطابقة لبحثك.</p>';
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">${uiText[currentLang].noResults}</p>`;
         return;
       }
 
       grid.innerHTML = items.map(item => {
         const imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80';
+        const title = currentLang === 'ar' ? item.titleAr : item.titleEn;
+        const snippet = currentLang === 'ar' ? item.snippetAr : item.snippetEn;
+        const sourceName = uiText[currentLang].sources[item.srcKey];
+        const dateLocale = currentLang === 'ar' ? 'ar-EG' : 'en-US';
 
         return `
           <a class="card" href="${item.link}" target="_blank" rel="noopener">
             <img src="${imgUrl}" class="card-img" alt="صورة الخبر" onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80'">
             <div class="card-content">
-              <span class="badge">${item.source}</span>
-              <h3 class="card-title">${item.titleAr}</h3>
-              <p class="card-snippet">${item.snippetAr}</p>
-              <span class="card-date">🕒 ${new Date(item.pubDate).toLocaleDateString('ar-EG')}</span>
+              <span class="badge">${sourceName}</span>
+              <h3 class="card-title">${title}</h3>
+              <p class="card-snippet">${snippet}</p>
+              <span class="card-date">🕒 ${new Date(item.pubDate).toLocaleDateString(dateLocale)}</span>
             </div>
           </a>
         `;
       }).join('');
     }
 
+    function setLanguage(lang) {
+      currentLang = lang;
+      const htmlRoot = document.getElementById('htmlRoot');
+      const btnAr = document.getElementById('btnAr');
+      const btnEn = document.getElementById('btnEn');
+      const searchInput = document.getElementById('searchInput');
+
+      if (lang === 'ar') {
+        htmlRoot.setAttribute('dir', 'rtl');
+        htmlRoot.setAttribute('lang', 'ar');
+        btnAr.classList.add('active');
+        btnEn.classList.remove('active');
+      } else {
+        htmlRoot.setAttribute('dir', 'ltr');
+        htmlRoot.setAttribute('lang', 'en');
+        btnEn.classList.add('active');
+        btnAr.classList.remove('active');
+      }
+
+      document.getElementById('logoText').innerHTML = uiText[lang].logo;
+      searchInput.placeholder = uiText[lang].placeholder;
+
+      if (allArticles.length > 0) {
+        renderNews(allArticles);
+      }
+    }
+
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const val = e.target.value.toLowerCase().trim();
-      const filtered = allArticles.filter(a => 
-        a.titleAr.toLowerCase().includes(val) || 
-        a.title.toLowerCase().includes(val) || 
-        a.snippetAr.toLowerCase().includes(val) ||
-        a.source.toLowerCase().includes(val)
-      );
+      const filtered = allArticles.filter(a => {
+        const title = currentLang === 'ar' ? a.titleAr : a.titleEn;
+        const snippet = currentLang === 'ar' ? a.snippetAr : a.snippetEn;
+        return title.toLowerCase().includes(val) || snippet.toLowerCase().includes(val);
+      });
       renderNews(filtered);
     });
 
@@ -270,4 +366,3 @@
   </script>
 </body>
 </html>
-
