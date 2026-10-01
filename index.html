@@ -3,19 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ملعب | أخبار الألعاب والشطرنج</title>
+  <title>ملعب | المركز الإخباري الشامل للألعاب</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #6366f1;
-      --primary-hover: #4f46e5;
       --bg: #0f172a;
       --card-bg: #1e293b;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --accent: #22c55e;
       --border: #334155;
     }
 
@@ -28,64 +26,55 @@
     }
 
     header {
-      background-color: rgba(30, 41, 59, 0.9);
+      background-color: rgba(30, 41, 59, 0.95);
       backdrop-filter: blur(10px);
       position: sticky;
       top: 0;
       z-index: 100;
       border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
+      padding: 1rem;
       display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 800;
       color: var(--text);
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
     .logo span { color: var(--primary); }
 
     .search-box input {
       background: var(--bg);
       border: 1px solid var(--border);
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1rem;
       border-radius: 20px;
       color: var(--text);
       font-family: inherit;
-      width: 200px;
-      transition: all 0.3s;
-    }
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--primary);
-      width: 250px;
+      width: 100%;
+      max-width: 300px;
     }
 
     main {
       max-width: 1200px;
-      margin: 2rem auto;
+      margin: 1.5rem auto;
       padding: 0 1rem;
     }
 
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      border-right: 4px solid var(--primary);
-      padding-right: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .loader {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.2rem;
+      color: var(--primary);
     }
 
     .news-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
     }
 
@@ -94,25 +83,27 @@
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border);
-      transition: transform 0.3s, box-shadow 0.3s;
       cursor: pointer;
       display: flex;
       flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s;
     }
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transform: translateY(-4px);
       border-color: var(--primary);
     }
 
     .card-img {
       width: 100%;
-      height: 200px;
+      height: 180px;
       object-fit: cover;
+      background-color: #334155;
     }
 
     .card-content {
-      padding: 1.2rem;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
@@ -126,15 +117,11 @@
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 700;
-      margin-bottom: 0.8rem;
-    }
-    .badge.chess {
-      background: rgba(34, 197, 94, 0.2);
-      color: var(--accent);
+      margin-bottom: 0.5rem;
     }
 
     .card-title {
-      font-size: 1.2rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
       line-height: 1.4;
@@ -142,175 +129,102 @@
 
     .card-snippet {
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 1rem;
       flex-grow: 1;
     }
 
     .card-date {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-    }
-
-    /* Modal / Reader View */
-    .reader-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.95);
-      z-index: 1000;
-      display: none;
-      overflow-y: auto;
-      padding: 2rem 1rem;
-    }
-    .reader-content {
-      max-width: 800px;
-      margin: 0 auto;
-      background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: 1rem; left: 1rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-    .reader-img {
-      width: 100%;
-      height: 350px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin: 1.5rem 0;
-    }
-    .reader-body {
-      font-size: 1.1rem;
-      color: #cbd5e1;
-      line-height: 1.8;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <a href="#" class="logo">🎮 ملعب <span>News</span></a>
+    <a href="#" class="logo">🎮 ملعب <span>All Gaming</span></a>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="بحث عن خبر...">
+      <input type="text" id="searchInput" placeholder="ابحث عن سوني، إكس بوكس، ألعاب جديدة...">
     </div>
   </header>
 
   <main>
-    <div class="section-title">
-      <h2>آخر الأخبار العالمية والحصرية</h2>
-    </div>
-
-    <div class="news-grid" id="newsGrid">
-      <!-- Cards will be inserted by JS -->
-    </div>
+    <div id="loader" class="loader">⏳ جاري تغطية كافّة الألعاب، سوني، وإكس بوكس تلقائياً...</div>
+    <div class="news-grid" id="newsGrid"></div>
   </main>
 
-  <!-- Article View Modal -->
-  <div class="reader-modal" id="readerModal">
-    <div class="reader-content">
-      <button class="close-btn" id="closeBtn">✕</button>
-      <span class="badge" id="modalBadge">تصنيف</span>
-      <h1 id="modalTitle" style="margin-top:0.5rem;">عنوان الخبر</h1>
-      <p class="card-date" id="modalDate">التاريخ</p>
-      <img id="modalImg" class="reader-img" src="" alt="">
-      <div class="reader-body" id="modalBody">محتوى الخبر...</div>
-    </div>
-  </div>
-
   <script>
-    const newsData = [
-      {
-        id: 1,
-        title: "الشاب الهندي غوكيش يتوج ببطولة العالم للشطرنج كأصغر بطل في التاريخ",
-        category: "شطرنج",
-        isChess: true,
-        date: "أكتوبر 2026",
-        img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80",
-        snippet: "دخل اللاعب الهندي دوماراجو غوكيش التاريخ بعد انتزاعه لقب بطولة العالم للشطرنج في مواجهة تاريخية حابسة الأنفاس.",
-        body: "شهدت بطولة العالم للشطرنج لحظة تاريخية استثنائية بعد أن تمكن الجراند ماستر الهندي دوماراجو غوكيش (Gukesh D) من حسم اللقب العالمي لصالحه، متفوقاً على منافسيه في جولات دراماتيكية.\n\nوبهذا الفوز، أصبح غوكيش أصغر بطل عالم في تاريخ اللعبة، مكسراً الرقم القياسي السابق الذي كان يحمله الأسطورة غاري كاسباروف. وأشاد أساطير اللعبة بمستوى التركيز الذهني والنقلات التكتيكية التي قدمها غوكيش طوال المواجهات الحاسمة."
-      },
-      {
-        id: 2,
-        title: "فريق T1 الكوري يتوج بلقب بطولة العالم لـ League of Legends بقيادة الاسطورة Faker",
-        category: "رياضة إلكترونية",
-        isChess: false,
-        date: "سبتمبر 2026",
-        img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
-        snippet: "واصل أسطورة الألعاب الإلكترونية Faker كتابة التاريخ بعد قيادة فريقه T1 للتتويج بلقب Worlds في صالة ممتلئة بالجماهير.",
-        body: "في ليلة خيالية لعشاق الرياضات الإلكترونية، توج فريق T1 الكوري بلقب بطولة العالم لـ League of Legends (Worlds) وسط حماس جماهيري غفير.\n\nوكان قائد الفريق Lee 'Faker' Sang-hyeok النجم الأبرز في السلسلة النهائية، حيث أظهر أداءً تكتيكياً خارقاً أثبت من خلاله استمراره كأفضل لاعب في تاريخ اللعبة على الإطلاق، رغم المنافسة الشرسة من الفرق الصينية والأوروبية."
-      },
-      {
-        id: 3,
-        title: "رسمياً: الإعلان عن إطلاق لعبة GTA VI في الخريف القادم مع عرض تفاعلي جديد",
-        category: "أخبار الشركات",
-        isChess: false,
-        date: "أغسطس 2026",
-        img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
-        snippet: "كشفت شركة Rockstar Games عن تفاصيل جديدة تخص عالم لعبة Grand Theft Auto VI وموعد صدورها النهائي.",
-        body: "أطلقت شركة Rockstar Games الإعلان الترويجي الثاني للعبة المنتظرة Grand Theft Auto VI، مؤكدة أن موعد الطرح الرسمي سيكون في خريف هذا العام على منصات PlayStation 5 و Xbox Series X/S.\n\nواستعرض العرض التفاصيل الرسومية المذهلة لمدينة Vice City المحسنة، مع نظام تفاعل هو الذكي من نوعه في تاريخ ألعاب العالم المفتوح."
-      },
-      {
-        id: 4,
-        title: "ماغنوس كارلسن يفوز ببطولة السريع والشطرنج الخاطف ويهاجم نظام البطولات التقليدية",
-        category: "شطرنج",
-        isChess: true,
-        date: "أغسطس 2026",
-        img: "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-        snippet: "أثبت المصنف الأول عالمياً ماغنوس كارلسن هيمنته المطلقة على بطولات الشطرنج السريع، مؤكداً فضله لهذا النمط السريع.",
-        body: "توّج النرويجي ماغنوس كارلسن بلقب بطولة الشطرنج الخاطف والسريع بعد أدوار هجومية ساحقة لم يمنح فيها منافسيه أي فرصة للتنفس.\n\nوفي تصريح مثير بعد التتويج، كرر كارلسن انتقاده لنظام الشطرنج الكلاسيكي الطويل، مشيراً إلى أن مستقبل اللعبة يكمن في المباريات السريعة والمثيرة التي تجذب الأجيال الجديدة وتزيد من الحماس."
-      }
+    // المصادر الشاملة: IGN + PlayStation + Xbox
+    const FEEDS = [
+      'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.ign.com%2Frss%2Farticles%2Ffeed%3Ftags%3Dgaming',
+      'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.xbox.com%2Fen-us%2Ffeed%2F',
+      'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fblog.playstation.com%2Ffeed%2F'
     ];
 
-    const grid = document.getElementById('newsGrid');
-    const modal = document.getElementById('readerModal');
-    const searchInput = document.getElementById('searchInput');
+    let allArticles = [];
+
+    async function fetchAllNews() {
+      const loader = document.getElementById('loader');
+
+      try {
+        const requests = FEEDS.map(url => fetch(url).then(res => res.json()));
+        const results = await Promise.all(requests);
+
+        results.forEach((data, index) => {
+          if (data.status === 'ok') {
+            const sourceName = index === 1 ? 'Xbox' : index === 2 ? 'PlayStation' : 'ألعاب عالمية';
+            const items = data.items.map(item => ({ ...item, source: sourceName }));
+            allArticles = allArticles.concat(items);
+          }
+        });
+
+        // ترتيب المقالات من الأحدث للأقدم
+        allArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+        loader.style.display = 'none';
+        renderNews(allArticles);
+      } catch (err) {
+        loader.textContent = 'تعذر جلب الأخبار، يرجى تحديث الصفحة.';
+      }
+    }
 
     function renderNews(items) {
-      grid.innerHTML = items.map(item => `
-        <div class="card" onclick="openArticle(${item.id})">
-          <img src="${item.img}" alt="${item.title}" class="card-img">
-          <div class="card-content">
-            <span class="badge ${item.isChess ? 'chess' : ''}">${item.category}</span>
-            <h3 class="card-title">${item.title}</h3>
-            <p class="card-snippet">${item.snippet}</p>
-            <span class="card-date">🕒 ${item.date}</span>
-          </div>
-        </div>
-      `).join('');
+      const grid = document.getElementById('newsGrid');
+      if (items.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">لا توجد أخبار مطابقة.</p>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        const imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80';
+        const cleanSnippet = item.description.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
+
+        return `
+          <a class="card" href="${item.link}" target="_blank">
+            <img src="${imgUrl}" class="card-img" alt="صورة الخبر" onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80'">
+            <div class="card-content">
+              <span class="badge">${item.source}</span>
+              <h3 class="card-title">${item.title}</h3>
+              <p class="card-snippet">${cleanSnippet}</p>
+              <span class="card-date">🕒 ${new Date(item.pubDate).toLocaleDateString('ar-EG')}</span>
+            </div>
+          </a>
+        `;
+      }).join('');
     }
 
-    function openArticle(id) {
-      const item = newsData.find(n => n.id === id);
-      if(!item) return;
-      document.getElementById('modalBadge').textContent = item.category;
-      document.getElementById('modalBadge').className = `badge ${item.isChess ? 'chess' : ''}`;
-      document.getElementById('modalTitle').textContent = item.title;
-      document.getElementById('modalDate').textContent = '🕒 ' + item.date;
-      document.getElementById('modalImg').src = item.img;
-      document.getElementById('modalBody').innerText = item.body;
-      modal.style.display = 'block';
-    }
-
-    document.getElementById('closeBtn').onclick = () => modal.style.display = 'none';
-
-    searchInput.addEventListener('input', (e) => {
-      const val = e.target.value.toLowerCase();
-      const filtered = newsData.filter(n => n.title.toLowerCase().includes(val) || n.snippet.toLowerCase().includes(val));
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const val = e.target.value.toLowerCase().trim();
+      const filtered = allArticles.filter(a => 
+        a.title.toLowerCase().includes(val) || 
+        a.description.toLowerCase().includes(val) ||
+        a.source.toLowerCase().includes(val)
+      );
       renderNews(filtered);
     });
 
-    // Initial Render
-    renderNews(newsData);
+    fetchAllNews();
   </script>
 </body>
 </html>
