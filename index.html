@@ -1,1 +1,342 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ملعب – أخبار الألعاب والرياضات والأنشطة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--ink:#1A1A1A;--mute:#5F6368;--line:#E4E7EC;--acc:#1F4FD8;--tint:#EEF2FF;--side:272px;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Cairo','Tajawal','Segoe UI',Tahoma,sans-serif;line-height:1.8;font-size:16px}
+button,input{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.layout{display:flex;min-height:100vh}
+/* الشريط الجانبي – يمين الشاشة */
+.sidebar{width:var(--side);flex:0 0 var(--side);background:#fff;border-left:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;padding:20px 14px;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.5rem;margin-bottom:18px;padding:0 6px}
+.brand svg{width:38px;height:38px;flex:none}
+.side-title{font-size:.85rem;color:var(--mute);font-weight:600;margin:6px 8px}
+.nav-all,.cat-btn,.sub-btn{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;cursor:pointer;text-align:right;border-radius:8px;padding:9px 10px}
+.nav-all:hover,.cat-btn:hover,.sub-btn:hover{background:#F5F6F8}
+.nav-all.active,.sub-btn.active,.cat-btn.active{background:var(--tint);color:var(--acc);font-weight:700}
+.cat-btn{font-weight:700}
+.cat-btn .arrow{margin-right:auto;transition:transform .2s;width:14px;height:14px}
+.cat.open .arrow{transform:rotate(-90deg)}
+.subs{display:none;margin:2px 14px 6px 0;border-right:2px solid var(--line);padding-right:6px}
+.cat.open .subs{display:block}
+.sub-btn{font-size:.93rem;padding:6px 10px;font-weight:400}
+.count{margin-right:auto;font-size:.75rem;background:#F0F1F4;color:var(--mute);border-radius:99px;padding:0 8px;line-height:1.6}
+.sub-btn.active .count,.cat-btn.active .count{background:#fff}
+/* المحتوى */
+.main{flex:1;min-width:0}
+header.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 28px}
+.burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;width:44px;height:44px;cursor:pointer;align-items:center;justify-content:center}
+.burger svg{width:22px;height:22px}
+.top-brand{display:none;font-weight:900;font-size:1.2rem}
+.search{flex:1;max-width:620px;position:relative}
+.search input{width:100%;border:1.5px solid var(--line);border-radius:99px;padding:9px 46px 9px 40px;background:#fff}
+.search input:focus{border-color:var(--acc)}
+.search .ico{position:absolute;right:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--mute);pointer-events:none}
+.clear{position:absolute;left:10px;top:50%;transform:translateY(-50%);border:0;background:#F0F1F4;border-radius:50%;width:24px;height:24px;cursor:pointer;display:none;line-height:1}
+.hero{padding:30px 28px 6px}
+.hero h1{font-size:clamp(1.7rem,3.2vw,2.5rem);font-weight:900;line-height:1.35;max-width:22ch}
+.hero p{color:var(--mute);max-width:60ch;margin-top:6px}
+.crumb{padding:14px 28px 0;color:var(--mute);font-size:.92rem}
+.crumb b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px;padding:18px 28px 40px}
+.card{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;cursor:pointer;display:flex;flex-direction:column;text-align:right;padding:0;transition:border-color .15s}
+.card:hover{border-color:var(--acc)}
+.thumb{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:3.2rem;position:relative}
+.thumb svg{position:absolute;inset:0;width:100%;height:100%}
+.thumb span{position:relative}
+.card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.tag{align-self:flex-start;font-size:.8rem;font-weight:700;color:var(--acc);background:var(--tint);border-radius:6px;padding:0 9px}
+.card h3{font-size:1.1rem;line-height:1.55;font-weight:700}
+.card p{color:var(--mute);font-size:.93rem;line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.date{margin-top:auto;font-size:.82rem;color:var(--mute)}
+.empty{grid-column:1/-1;text-align:center;padding:60px 10px;color:var(--mute)}
+.empty b{display:block;color:var(--ink);font-size:1.2rem;margin-bottom:4px}
+/* قراءة المقال */
+.reader{max-width:760px;margin:0 auto;padding:22px 28px 60px}
+.back{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 16px;cursor:pointer;font-weight:600;margin-bottom:20px}
+.back:hover{border-color:var(--acc);color:var(--acc)}
+.reader .thumb{border-radius:var(--r);overflow:hidden;margin-bottom:18px;font-size:5rem}
+.reader h2{font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.5;font-weight:900;margin:8px 0}
+.meta{color:var(--mute);font-size:.9rem;margin-bottom:18px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.reader p.body{font-size:1.08rem;line-height:2.05;margin-bottom:16px;max-width:70ch}
+.hidden{display:none!important}
+.overlay{position:fixed;inset:0;background:rgba(26,26,26,.45);z-index:25;display:none}
+footer{border-top:1px solid var(--line);padding:18px 28px;color:var(--mute);font-size:.88rem}
+/* الاستجابة */
+@media (max-width:900px){
+ .sidebar{position:fixed;top:0;right:0;bottom:0;height:100%;width:min(300px,86vw);flex:none;transform:translateX(100%);transition:transform .25s;border-left:0;box-shadow:-8px 0 30px rgba(0,0,0,.12)}
+ body.menu-open .sidebar{transform:none}
+ body.menu-open .overlay{display:block}
+ .burger{display:flex}
+ .top-brand{display:block}
+ header.top{padding:10px 14px}
+ .hero,.crumb{padding-right:16px;padding-left:16px}
+ .grid{padding:16px;gap:16px}
+ .reader{padding:16px 16px 48px}
+ .search{order:3;flex-basis:100%;max-width:none}
+ header.top{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="layout">
+ <aside class="sidebar" id="sidebar" aria-label="التصنيفات">
+  <div class="brand">
+   <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#1F4FD8"/><circle cx="20" cy="20" r="9" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M20 11v18M11 20h18" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+   ملعب
+  </div>
+  <div class="side-title">التصنيفات</div>
+  <button class="nav-all active" id="navAll" type="button">🏠 كل الأخبار <span class="count" id="countAll"></span></button>
+  <nav id="catNav"></nav>
+ </aside>
+ <div class="overlay" id="overlay"></div>
+
+ <div class="main">
+  <header class="top">
+   <button class="burger" id="burger" type="button" aria-label="فتح القائمة" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+   </button>
+   <div class="top-brand">ملعب</div>
+   <form class="search" role="search" id="searchForm">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input type="search" id="q" placeholder="ابحث عن لعبة أو نشاط أو خبر…" aria-label="بحث" autocomplete="off">
+    <button type="button" class="clear" id="clear" aria-label="مسح البحث">×</button>
+   </form>
+  </header>
+
+  <section id="listView">
+   <div class="hero">
+    <h1>كل ما يخص الألعاب والرياضات والأنشطة في مكان واحد</h1>
+    <p>أخبار ألعاب الفيديو، الألعاب الذهنية، الرياضات والأنشطة المجتمعية، من الحدث الكبير إلى الخبر المحلي الصغير.</p>
+   </div>
+   <div class="crumb" id="crumb"></div>
+   <div class="grid" id="grid" aria-live="polite"></div>
+  </section>
+
+  <section id="readerView" class="hidden"></section>
+  <footer>المقالات المعروضة نماذج تجريبية لعرض تصميم الموقع، ويمكن استبدالها بمحتواك في مصفوفة <code>ARTICLES</code> داخل الكود.</footer>
+ </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ===== التصنيفات ===== */
+var CATS=[
+ {id:'video',name:'أخبار ألعاب الفيديو',icon:'🎮',color:'#1F4FD8',subs:[
+  {id:'mobile',name:'ألعاب الهواتف الذكية'},{id:'pc',name:'ألعاب الكمبيوتر'},
+  {id:'console',name:'منصات الكونسول (PlayStation, Xbox, Nintendo)'}]},
+ {id:'companies',name:'أخبار شركات الألعاب',icon:'🏢',color:'#0E7C66',subs:[
+  {id:'big',name:'أخبار الشركات الكبرى'},{id:'acq',name:'الاستحواذات'},
+  {id:'updates',name:'التحديثات'},{id:'events',name:'المؤتمرات'}]},
+ {id:'board',name:'الألعاب غير الإلكترونية والذهنية',icon:'♟️',color:'#7A3FC4',subs:[
+  {id:'chess',name:'الشطرنج'},{id:'tawla',name:'ألعاب الطاولة'},
+  {id:'cards',name:'ألعاب الورق'},{id:'mind',name:'الأنشطة الذهنية'}]},
+ {id:'sports',name:'الرياضات والأنشطة العامة',icon:'⚽',color:'#C2410C',subs:[
+  {id:'football',name:'كرة القدم'},{id:'basket',name:'كرة السلة'},
+  {id:'martial',name:'الرياضات القتالية'},{id:'community',name:'أنشطة رياضية ومجتمعية'}]},
+ {id:'general',name:'المقالات العامة والإخبارية',icon:'📰',color:'#B4234B',subs:[
+  {id:'main',name:'أخبار جوهرية'},{id:'minor',name:'أخبار هامشية ومنوعة'}]}
+];
+var CAT={},SUB={};
+CATS.forEach(function(c){CAT[c.id]=c;c.subs.forEach(function(s){s.cat=c.id;SUB[c.id+'/'+s.id]=s;});});
+
+/* ===== المقالات (نماذج) ===== */
+var ARTICLES=[
+ {id:1,cat:'video',sub:'mobile',date:'2026-09-28',title:'كيف تختار لعبة هاتف تناسب وقتك القصير؟',
+  text:['ألعاب الهواتف ليست كلها متشابهة؛ فبعضها صُمم لجلسات من دقيقتين، وبعضها يحتاج ساعة كاملة من التركيز.','إذا كنت تلعب أثناء التنقل فاختر ألعاباً تحفظ تقدمك تلقائياً وتعمل دون اتصال بالإنترنت، فهذا يوفر عليك الكثير من الإحباط.','وانتبه إلى نظام الشراء داخل اللعبة: الألعاب التي تعتمد على الانتظار المدفوع قد تستنزف وقتك أكثر مما تتخيل.','أخيراً، اقرأ تقييمات المستخدمين الأخيرة لا القديمة، فالتحديثات قد تغيّر تجربة اللعبة تماماً.']},
+ {id:2,cat:'video',sub:'pc',date:'2026-09-27',title:'أساسيات تجهيز حاسوب للألعاب بميزانية معقولة',
+  text:['لا تحتاج إلى أغلى المكونات لتحصل على تجربة ممتعة؛ المهم هو التوازن بين المعالج وبطاقة الرسوميات والذاكرة.','ابدأ بتحديد الشاشة التي ستلعب عليها، لأن دقة الشاشة هي التي تحدد قوة بطاقة الرسوميات المطلوبة.','وفّر ذاكرة تخزين سريعة من نوع SSD لأن أوقات التحميل تتحسن بشكل واضح.','وأخيراً، لا تهمل التبريد ومصدر الطاقة، فهما أساس استقرار الجهاز على المدى الطويل.']},
+ {id:3,cat:'video',sub:'console',date:'2026-09-25',title:'مقارنة سريعة بين منصات الكونسول: أيها يناسبك؟',
+  text:['تتميز كل منصة بمكتبة ألعاب وأسلوب لعب مختلف، ولذلك يعتمد الاختيار على نوع الألعاب التي تفضلها.','المنصات المحمولة الهجينة مناسبة للعب العائلي والتنقل، بينما تركّز المنصات المنزلية على الرسوميات العالية.','قبل الشراء فكّر في الاشتراكات الشهرية وتكلفة الألعاب وأصدقائك الذين ستلعب معهم.']},
+ {id:4,cat:'video',sub:'mobile',date:'2026-09-20',title:'ألعاب جماعية خفيفة للعب مع العائلة على الهاتف',
+  text:['اللعب الجماعي على الهاتف أصبح وسيلة جيدة لجمع أفراد العائلة حول نشاط مشترك.','ابحث عن ألعاب تدعم اللعب المحلي أو تحتاج إلى جهاز واحد فقط حتى يشارك الجميع بسهولة.','ضع قواعد واضحة لوقت اللعب حتى يبقى النشاط ممتعاً للجميع.']},
+ {id:5,cat:'companies',sub:'big',date:'2026-09-29',title:'ماذا تعني دورات التطوير الطويلة لاستوديوهات الألعاب الكبرى؟',
+  text:['يستغرق تطوير الألعاب الكبرى اليوم سنوات عدة، وتشارك فيه فرق تضم مئات الأشخاص.','هذا الامتداد الزمني يجعل الشركات أكثر حذراً في اختيار مشاريعها، ويدفعها إلى الاستثمار في سلاسل معروفة.','في المقابل، يملأ المطورون المستقلون الفراغ بأفكار جديدة وميزانيات أصغر.']},
+ {id:6,cat:'companies',sub:'acq',date:'2026-09-22',title:'لماذا تتجه الشركات إلى الاستحواذ على استوديوهات صغيرة؟',
+  text:['تمنح الاستحواذات الشركات الكبرى وصولاً سريعاً إلى مواهب وتقنيات وألعاب جاهزة أو شبه جاهزة.','أما للاستوديو الصغير فهي فرصة للحصول على تمويل واستقرار، لكنها قد تقيّد حريته الإبداعية.','ويتابع اللاعبون هذه الصفقات بقلق أحياناً، خوفاً من تغيير هوية الألعاب المحبوبة.']},
+ {id:7,cat:'companies',sub:'updates',date:'2026-09-18',title:'كيف تقرأ ملاحظات التحديث في ألعابك المفضلة؟',
+  text:['ملاحظات التحديث وثيقة قصيرة تلخص ما تغيّر في اللعبة: إصلاحات، وتوازن، ومحتوى جديد.','ابدأ بقسم الإصلاحات المهمة، ثم انتقل إلى تغييرات التوازن إن كنت تلعب تنافسياً.','وإذا لم تفهم تغييراً ما فجرّبه في وضع تدريب قبل خوض مباراة جادة.']},
+ {id:8,cat:'companies',sub:'events',date:'2026-09-15',title:'دليل متابعة مؤتمرات الألعاب دون أن يفوتك شيء',
+  text:['تعرض المؤتمرات عادةً إعلانات الألعاب القادمة وعروضاً تقنية ولقاءات مع المطورين.','اتبع حسابات الشركات الرسمية وفعّل التنبيهات لتصلك المواعيد وروابط البث المباشر.','وللحصول على ملخص سريع، ابحث عن القوائم التي تجمع أبرز الإعلانات بعد كل حدث.']},
+ {id:9,cat:'board',sub:'chess',date:'2026-09-30',title:'خمس قواعد تساعد المبتدئ في الشطرنج على تحسين أدائه',
+  text:['تحكّم في مركز الرقعة مبكراً، فالقطع المتمركزة تكون أكثر تأثيراً.','طوّر قطعك الخفيفة قبل الخروج بالوزير، ولا تحرك القطعة نفسها مرتين في الافتتاح دون سبب.','احرص على تبييت الملك مبكراً لتأمينه وربط الأبراج.','وقبل كل نقلة اسأل نفسك: ماذا يهدد خصمي الآن؟ فهذا السؤال وحده يمنع أخطاء كثيرة.']},
+ {id:10,cat:'board',sub:'tawla',date:'2026-09-24',title:'مهارات في لعبة الطاولة تتجاوز حظ النرد',
+  text:['رغم دور النرد، تُحسم كثير من المباريات بحسن التخطيط وإدارة المخاطر.','تعلّم متى تحمي قطعك ومتى تغامر بالهجوم، وراقب توزيع القطع على الرقعة باستمرار.','والتدرّب مع لاعب أقوى هو أسرع طريق لرفع المستوى.']},
+ {id:11,cat:'board',sub:'cards',date:'2026-09-19',title:'ألعاب ورق عائلية سهلة التعلم',
+  text:['ألعاب الورق الخفيفة مناسبة لجميع الأعمار ولا تحتاج إلا إلى مجموعة أوراق وطاولة.','ابدأ بلعبة قواعدها قليلة ثم أضف تعقيداً تدريجياً كلما اعتاد المشاركون.','وتذكّر أن الهدف هو الاستمتاع بالوقت المشترك لا الفوز وحده.']},
+ {id:12,cat:'board',sub:'mind',date:'2026-09-12',title:'ألغاز وأنشطة ذهنية لتنشيط التفكير يومياً',
+  text:['الألغاز المنطقية والكلمات المتقاطعة والسودوكو تمرّن الانتباه وحل المشكلات.','خصص عشر دقائق يومياً في وقت ثابت لتتحول الأنشطة الذهنية إلى عادة.','ونوّع بين الأنشطة حتى لا يعتاد الدماغ على نمط واحد.']},
+ {id:13,cat:'sports',sub:'football',date:'2026-09-29',title:'تمارين بسيطة لتطوير التحكم بالكرة في الحي',
+  text:['لا تحتاج إلى ملعب كامل لتحسين مهاراتك؛ مساحة صغيرة وكرة تكفيان.','تدرّب على لمسات متتابعة بالقدمين، ثم أضف تغيير الاتجاه والمراوغة بين أقماع بسيطة.','وسجّل تدريباتك بالفيديو لتلاحظ أخطاءك وتتابع تقدمك.']},
+ {id:14,cat:'sports',sub:'basket',date:'2026-09-23',title:'أساسيات التصويب الصحيح في كرة السلة',
+  text:['يبدأ التصويب الجيد من القدمين: توازن ثابت وركبتان مرنتان.','حافظ على مرفق مستقيم أسفل الكرة وأنهِ الحركة بانثناء المعصم نحو السلة.','كرّر التصويبة من مسافة قريبة قبل الابتعاد تدريجياً.']},
+ {id:15,cat:'sports',sub:'martial',date:'2026-09-17',title:'كيف تختار رياضة قتالية مناسبة لك ولأطفالك؟',
+  text:['لكل رياضة قتالية فلسفة وأسلوب تدريب، بعضها يركّز على الضرب وبعضها على المسك والتحكم.','زُر أكثر من نادٍ وجرّب حصة تجريبية، وتأكد من وجود مدرب مؤهل وإجراءات أمان واضحة.','واختر ما يشجع على الانضباط والاحترام قبل البحث عن البطولات.']},
+ {id:16,cat:'sports',sub:'community',date:'2026-09-26',title:'دوري الحي: كيف تنظّم بطولة مجتمعية صغيرة؟',
+  text:['حدّد الرياضة وعدد الفرق وموعد المباريات، ثم اتفق على قواعد بسيطة يفهمها الجميع.','استعن بمتطوعين للتحكيم والتنظيم، وجهّز جدولاً واضحاً يُعلَّق في مكان ظاهر.','وختام البطولة بتكريم رمزي يترك أثراً جميلاً بين المشاركين.']},
+ {id:17,cat:'general',sub:'main',date:'2026-09-30',title:'لماذا تحتل الأنشطة الجماعية مكانة أكبر في حياتنا؟',
+  text:['يتجه الناس اليوم إلى الأنشطة التي تجمعهم، سواء كانت ألعاباً أو رياضات أو هوايات.','تعزز هذه الأنشطة الروابط الاجتماعية وتمنح الإحساس بالانتماء إلى مجموعة.','ومع تنوع الخيارات أصبح بإمكان كل شخص إيجاد نشاط يناسب ميوله وعمره.']},
+ {id:18,cat:'general',sub:'minor',date:'2026-09-21',title:'مجموعة أصدقاء تعيد إحياء لعبة شعبية قديمة في الحي',
+  text:['اجتمع عدد من الجيران لإعادة تنظيم لعبة شعبية كانت تُلعب في الأزقة قبل سنوات.','وضعوا قواعد مكتوبة، وخصصوا مساء كل جمعة للعب، فانضم إليهم الصغار والكبار.','وقد بدأت المبادرة صغيرة، لكنها أثبتت أن النشاط البسيط قد يجمع الحي كله.']}
+];
+
+/* ===== أدوات ===== */
+var MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function fmt(d){var p=d.split('-');return +p[2]+' '+MONTHS[+p[1]-1]+' '+p[0];}
+function norm(s){return String(s).toLowerCase().replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function thumb(a,big){
+ var c=CAT[a.cat],h=(a.id*37)%360;
+ return '<div class="thumb" style="background:'+c.color+'1A">'+
+  '<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
+  '<circle cx="'+(20+a.id*7%120)+'" cy="70" r="46" fill="'+c.color+'" opacity=".16"/>'+
+  '<circle cx="'+(140-a.id*5%90)+'" cy="12" r="30" fill="'+c.color+'" opacity=".12"/>'+
+  '<path d="M0 78 Q40 '+(55+a.id%20)+' 80 72 T160 66 V90 H0Z" fill="'+c.color+'" opacity=".18"/></svg>'+
+  '<span role="img" aria-label="'+esc(c.name)+'">'+c.icon+'</span></div>';
+}
+
+/* ===== الحالة ===== */
+var state={cat:null,sub:null,q:''};
+
+/* ===== بناء القائمة ===== */
+function countFor(cat,sub){return ARTICLES.filter(function(a){return (!cat||a.cat===cat)&&(!sub||a.sub===sub);}).length;}
+function buildNav(){
+ var html='';
+ CATS.forEach(function(c){
+  html+='<div class="cat" data-cat="'+c.id+'">'+
+   '<button type="button" class="cat-btn" aria-expanded="false" data-cat="'+c.id+'"><span>'+c.icon+'</span><span>'+esc(c.name)+'</span>'+
+   '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>'+
+   '<div class="subs">';
+  c.subs.forEach(function(s){
+   html+='<button type="button" class="sub-btn" data-cat="'+c.id+'" data-sub="'+s.id+'">'+esc(s.name)+'<span class="count">'+countFor(c.id,s.id)+'</span></button>';
+  });
+  html+='</div></div>';
+ });
+ $('catNav').innerHTML=html;
+ $('countAll').textContent=ARTICLES.length;
+}
+function syncNav(){
+ $('navAll').classList.toggle('active',!state.cat);
+ document.querySelectorAll('.cat').forEach(function(el){
+  var open=el.dataset.cat===state.cat;
+  el.classList.toggle('open',open||el.classList.contains('open')&&el.dataset.keep==='1');
+  var b=el.querySelector('.cat-btn');
+  b.classList.toggle('active',open&&!state.sub);
+  b.setAttribute('aria-expanded',el.classList.contains('open'));
+ });
+ document.querySelectorAll('.sub-btn').forEach(function(b){
+  b.classList.toggle('active',b.dataset.cat===state.cat&&b.dataset.sub===state.sub);
+ });
+}
+
+/* ===== العرض ===== */
+function filtered(){
+ var q=norm(state.q.trim());
+ return ARTICLES.filter(function(a){
+  if(state.cat&&a.cat!==state.cat)return false;
+  if(state.sub&&a.sub!==state.sub)return false;
+  if(!q)return true;
+  var hay=norm(a.title+' '+a.text.join(' ')+' '+CAT[a.cat].name+' '+SUB[a.cat+'/'+a.sub].name);
+  return q.split(/\s+/).every(function(w){return hay.indexOf(w)>-1;});
+ }).sort(function(a,b){return a.date<b.date?1:-1;});
+}
+function renderList(){
+ var list=filtered(),g=$('grid');
+ var label='كل الأخبار';
+ if(state.cat)label=CAT[state.cat].name+(state.sub?' ‹ '+SUB[state.cat+'/'+state.sub].name:'');
+ $('crumb').innerHTML='<b>'+esc(label)+'</b> — '+list.length+' خبر'+(state.q.trim()?' لنتائج البحث عن «'+esc(state.q.trim())+'»':'');
+ if(!list.length){
+  g.innerHTML='<div class="empty"><b>لا توجد نتائج</b>جرّب كلمة أخرى أو اختر «كل الأخبار» من القائمة.</div>';
+  return;
+ }
+ g.innerHTML=list.map(function(a){
+  var s=SUB[a.cat+'/'+a.sub];
+  return '<button type="button" class="card" data-id="'+a.id+'">'+thumb(a)+
+   '<div class="card-body"><span class="tag">'+esc(s.name)+'</span><h3>'+esc(a.title)+'</h3>'+
+   '<p>'+esc(a.text[0])+'</p><span class="date">'+fmt(a.date)+'</span></div></button>';
+ }).join('');
+}
+var lastScroll=0;
+function openArticle(id){
+ var a=ARTICLES.filter(function(x){return x.id===id;})[0];if(!a)return;
+ lastScroll=window.scrollY;
+ var s=SUB[a.cat+'/'+a.sub];
+ $('readerView').innerHTML='<article class="reader">'+
+  '<button type="button" class="back" id="backBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>العودة إلى الأخبار</button>'+
+  thumb(a,true)+
+  '<div class="meta"><span class="tag">'+esc(CAT[a.cat].name+' ‹ '+s.name)+'</span><time datetime="'+a.date+'">'+fmt(a.date)+'</time></div>'+
+  '<h2>'+esc(a.title)+'</h2>'+
+  a.text.map(function(p){return '<p class="body">'+esc(p)+'</p>';}).join('')+
+  '</article>';
+ $('listView').classList.add('hidden');
+ $('readerView').classList.remove('hidden');
+ window.scrollTo(0,0);
+ $('backBtn').focus({preventScroll:true});
+}
+function closeArticle(){
+ $('readerView').classList.add('hidden');
+ $('listView').classList.remove('hidden');
+ window.scrollTo(0,lastScroll);
+}
+function showList(){
+ if(!$('readerView').classList.contains('hidden')){$('readerView').classList.add('hidden');$('listView').classList.remove('hidden');}
+ syncNav();renderList();
+}
+function setMenu(open){
+ document.body.classList.toggle('menu-open',open);
+ $('burger').setAttribute('aria-expanded',open);
+}
+
+/* ===== الأحداث ===== */
+$('navAll').addEventListener('click',function(){
+ state.cat=null;state.sub=null;showList();setMenu(false);window.scrollTo(0,0);
+});
+$('catNav').addEventListener('click',function(e){
+ var sb=e.target.closest('.sub-btn'),cb=e.target.closest('.cat-btn');
+ if(sb){state.cat=sb.dataset.cat;state.sub=sb.dataset.sub;showList();setMenu(false);window.scrollTo(0,0);return;}
+ if(cb){
+  var wrap=cb.parentNode,wasOpen=wrap.classList.contains('open');
+  wrap.dataset.keep='1';
+  if(wasOpen&&state.cat===cb.dataset.cat&&!state.sub){wrap.classList.remove('open');wrap.dataset.keep='0';state.cat=null;}
+  else{state.cat=cb.dataset.cat;state.sub=null;wrap.classList.add('open');}
+  showList();window.scrollTo(0,0);
+ }
+});
+$('grid').addEventListener('click',function(e){
+ var c=e.target.closest('.card');if(c)openArticle(+c.dataset.id);
+});
+$('readerView').addEventListener('click',function(e){
+ if(e.target.closest('#backBtn'))closeArticle();
+});
+$('q').addEventListener('input',function(e){
+ state.q=e.target.value;
+ $('clear').style.display=state.q?'block':'none';
+ showList();
+});
+$('clear').addEventListener('click',function(){
+ $('q').value='';state.q='';this.style.display='none';showList();$('q').focus();
+});
+$('searchForm').addEventListener('submit',function(e){e.preventDefault();});
+$('burger').addEventListener('click',function(){setMenu(!document.body.classList.contains('menu-open'));});
+$('overlay').addEventListener('click',function(){setMenu(false);});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false);});
+window.addEventListener('resize',function(){if(window.innerWidth>900)setMenu(false);});
+
+buildNav();syncNav();renderList();
+})();
+</script>
+</body>
+</html>
