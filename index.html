@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ملعب | المركز الإخباري الشامل للألعاب</title>
+  <title>ملعب | المركز الإخباري العالمي للألعاب</title>
+  
+  <!-- كود التتبع والإحصائيات الخاص بحسابك tryg مدمج هنا -->
+  <script data-goatcounter="https://tryg.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #4f46e5;
-      --primary-hover: #4338ca;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,6 +30,9 @@
       color: var(--text);
       line-height: 1.6;
     }
+
+    .goog-te-banner-frame, .skiptranslate { display: none !important; }
+    body { top: 0px !important; }
 
     header {
       background-color: #ffffff;
@@ -66,44 +72,29 @@
       color: var(--text);
       font-family: inherit;
       width: 100%;
-      min-width: 220px;
+      min-width: 200px;
       font-size: 0.9rem;
       outline: none;
-      transition: all 0.2s;
-    }
-    .search-box input:focus {
-      background: #ffffff;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
-    /* قائمة اختيار اللغة الصغيرة على اليسار */
-    .lang-switcher {
+    .lang-select-container {
       display: flex;
-      flex-direction: column;
-      gap: 3px;
+      align-items: center;
+      gap: 0.3rem;
       background: #f1f5f9;
-      padding: 4px;
+      padding: 4px 8px;
       border-radius: 8px;
       border: 1px solid var(--border);
     }
-    .lang-btn {
+    .lang-select-container select {
       background: transparent;
       border: none;
-      padding: 3px 10px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border-radius: 5px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
       cursor: pointer;
-      color: var(--text-muted);
-      font-family: inherit;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    .lang-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      outline: none;
+      font-family: 'Inter', sans-serif;
     }
 
     main {
@@ -131,16 +122,12 @@
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border);
-      cursor: pointer;
       display: flex;
       flex-direction: column;
-      text-decoration: none;
-      color: inherit;
       box-shadow: var(--shadow);
-      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      transition: all 0.3s ease;
     }
     .card:hover {
-      transform: translateY(-4px);
       box-shadow: var(--shadow-hover);
       border-color: var(--primary);
     }
@@ -181,40 +168,83 @@
     .card-snippet {
       color: var(--text-muted);
       font-size: 0.88rem;
-      margin-bottom: 1.2rem;
-      flex-grow: 1;
+      margin-bottom: 1rem;
       line-height: 1.6;
+    }
+
+    .full-details {
+      display: none;
+      padding-top: 0.8rem;
+      margin-top: 0.8rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .read-more-btn {
+      align-self: flex-start;
+      background: #f1f5f9;
+      color: var(--primary);
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: auto;
+      transition: background 0.2s;
+    }
+    .read-more-btn:hover {
+      background: #e0e7ff;
     }
 
     .card-date {
       font-size: 0.8rem;
       color: #94a3b8;
       font-weight: 600;
+      margin-top: 0.8rem;
     }
+
+    #google_translate_element { display: none; }
   </style>
+
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
 
   <header>
-    <a href="#" class="logo" id="logoText">🎮 ملعب <span>الأخبار</span></a>
+    <a href="#" class="logo">🎮 ملعب <span>Gaming</span></a>
     
     <div class="header-actions">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="ابحث عن الأخبار...">
+        <input type="text" id="searchInput" placeholder="Search / ابحث...">
       </div>
 
-      <!-- مربعات اختيارات اللغة الجانبية -->
-      <div class="lang-switcher">
-        <button class="lang-btn active" id="btnAr" onclick="setLanguage('ar')">عربي</button>
-        <button class="lang-btn" id="btnEn" onclick="setLanguage('en')">ENGLISH</button>
+      <div class="lang-select-container">
+        🌐 <select id="languageSelect" onchange="changeLanguage(this.value)">
+          <option value="ar">Arabic</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="it">Italian</option>
+          <option value="pt">Portuguese</option>
+          <option value="ru">Russian</option>
+          <option value="zh-CN">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="tr">Turkish</option>
+        </select>
       </div>
     </div>
   </header>
 
   <main>
-    <div id="loader" class="loader">⏳ جاري تحميل الأخبار وتجهيز المحتوى...</div>
+    <div id="loader" class="loader">⏳ Loading live games news...</div>
     <div class="news-grid" id="newsGrid"></div>
   </main>
+
+  <div id="google_translate_element"></div>
 
   <script>
     const FEEDS = [
@@ -223,43 +253,48 @@
       'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fblog.playstation.com%2Ffeed%2F'
     ];
 
-    let currentLang = 'ar';
     let allArticles = [];
 
-    // نصوص الواجهة
-    const uiText = {
-      ar: {
-        logo: '🎮 ملعب <span>الأخبار</span>',
-        placeholder: 'ابحث عن GTA 6، سوني، إكس بوكس...',
-        loading: '⏳ جاري جلب وترجمة الأخبار إلى العربية الفصحى تلقائياً...',
-        noResults: 'لا توجد أخبار مطابقة لبحثك.',
-        sources: { xbox: 'إكس بوكس', ps: 'بلايستيشن', global: 'ألعاب عالمية' }
-      },
-      en: {
-        logo: '🎮 Malab <span>Gaming</span>',
-        placeholder: 'Search GTA 6, Sony, Xbox...',
-        loading: '⏳ Loading live gaming news...',
-        noResults: 'No news matching your search.',
-        sources: { xbox: 'Xbox', ps: 'PlayStation', global: 'Global Gaming' }
-      }
-    };
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'ar,en,es,fr,de,it,pt,ru,zh-CN,ja,tr',
+        autoDisplay: false
+      }, 'google_translate_element');
+      
+      detectUserLanguage();
+    }
 
-    async function translateText(text) {
-      if (!text) return '';
-      try {
-        const cleanText = text.replace(/<[^>]*>?/gm, '').substring(0, 180);
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(cleanText)}`;
-        const res = await fetch(url);
-        const data = await res.json();
-        return data[0].map(item => item[0]).join('');
-      } catch (e) {
-        return text;
+    function detectUserLanguage() {
+      const userLang = navigator.language || navigator.userLanguage;
+      const langCode = userLang.split('-')[0];
+      
+      const select = document.getElementById('languageSelect');
+      if (select.querySelector(`option[value="${langCode}"]`)) {
+        select.value = langCode;
+        changeLanguage(langCode);
+      } else {
+        changeLanguage('ar');
+      }
+    }
+
+    function changeLanguage(langCode) {
+      const googleSelect = document.querySelector('.goog-te-combo');
+      if (googleSelect) {
+        googleSelect.value = langCode;
+        googleSelect.dispatchEvent(new Event('change'));
+      }
+      
+      const htmlRoot = document.getElementById('htmlRoot');
+      if (langCode === 'ar') {
+        htmlRoot.setAttribute('dir', 'rtl');
+      } else {
+        htmlRoot.setAttribute('dir', 'ltr');
       }
     }
 
     async function fetchAllNews() {
       const loader = document.getElementById('loader');
-      loader.innerHTML = uiText[currentLang].loading;
 
       try {
         const requests = FEEDS.map(url => fetch(url).then(res => res.json()));
@@ -268,97 +303,69 @@
         let rawArticles = [];
         results.forEach((data, index) => {
           if (data.status === 'ok') {
-            const srcKey = index === 1 ? 'xbox' : index === 2 ? 'ps' : 'global';
-            const items = data.items.map(item => ({ ...item, srcKey }));
+            const sourceName = index === 1 ? 'Xbox' : index === 2 ? 'PlayStation' : 'Global Gaming';
+            const items = data.items.map(item => ({ ...item, source: sourceName }));
             rawArticles = rawArticles.concat(items);
           }
         });
 
         rawArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-        const topArticles = rawArticles.slice(0, 15);
-
-        allArticles = await Promise.all(topArticles.map(async (item) => {
-          const cleanSnippetEn = item.description.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
-          const translatedTitle = await translateText(item.title);
-          const translatedSnippet = await translateText(item.description);
-          return {
-            ...item,
-            titleEn: item.title,
-            snippetEn: cleanSnippetEn,
-            titleAr: translatedTitle,
-            snippetAr: translatedSnippet + '...'
-          };
-        }));
+        allArticles = rawArticles.slice(0, 18);
 
         loader.style.display = 'none';
         renderNews(allArticles);
       } catch (err) {
-        loader.textContent = currentLang === 'ar' ? 'تعذر جلب الأخبار، يرجى إعادة التحديث.' : 'Failed to load news, please refresh.';
+        loader.textContent = 'Failed to load news, please refresh.';
       }
     }
 
     function renderNews(items) {
       const grid = document.getElementById('newsGrid');
       if (items.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">${uiText[currentLang].noResults}</p>`;
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No news found.</p>';
         return;
       }
 
-      grid.innerHTML = items.map(item => {
+      grid.innerHTML = items.map((item, index) => {
         const imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80';
-        const title = currentLang === 'ar' ? item.titleAr : item.titleEn;
-        const snippet = currentLang === 'ar' ? item.snippetAr : item.snippetEn;
-        const sourceName = uiText[currentLang].sources[item.srcKey];
-        const dateLocale = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+        const cleanSnippet = item.description.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
+        const fullContent = item.description.replace(/<[^>]*>?/gm, '');
 
         return `
-          <a class="card" href="${item.link}" target="_blank" rel="noopener">
-            <img src="${imgUrl}" class="card-img" alt="صورة الخبر" onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80'">
+          <div class="card" id="card-${index}">
+            <img src="${imgUrl}" class="card-img" alt="News Image">
             <div class="card-content">
-              <span class="badge">${sourceName}</span>
-              <h3 class="card-title">${title}</h3>
-              <p class="card-snippet">${snippet}</p>
-              <span class="card-date">🕒 ${new Date(item.pubDate).toLocaleDateString(dateLocale)}</span>
+              <span class="badge">${item.source}</span>
+              <h3 class="card-title">${item.title}</h3>
+              <p class="card-snippet">${cleanSnippet}</p>
+
+              <div class="full-details" id="details-${index}">
+                <p>${fullContent}</p>
+              </div>
+
+              <button class="read-more-btn" onclick="toggleDetails(${index})">Read Details / التفاصيل</button>
+              <span class="card-date">🕒 ${new Date(item.pubDate).toLocaleDateString()}</span>
             </div>
-          </a>
+          </div>
         `;
       }).join('');
     }
 
-    function setLanguage(lang) {
-      currentLang = lang;
-      const htmlRoot = document.getElementById('htmlRoot');
-      const btnAr = document.getElementById('btnAr');
-      const btnEn = document.getElementById('btnEn');
-      const searchInput = document.getElementById('searchInput');
-
-      if (lang === 'ar') {
-        htmlRoot.setAttribute('dir', 'rtl');
-        htmlRoot.setAttribute('lang', 'ar');
-        btnAr.classList.add('active');
-        btnEn.classList.remove('active');
+    function toggleDetails(index) {
+      const details = document.getElementById(`details-${index}`);
+      if (details.style.display === 'block') {
+        details.style.display = 'none';
       } else {
-        htmlRoot.setAttribute('dir', 'ltr');
-        htmlRoot.setAttribute('lang', 'en');
-        btnEn.classList.add('active');
-        btnAr.classList.remove('active');
-      }
-
-      document.getElementById('logoText').innerHTML = uiText[lang].logo;
-      searchInput.placeholder = uiText[lang].placeholder;
-
-      if (allArticles.length > 0) {
-        renderNews(allArticles);
+        details.style.display = 'block';
       }
     }
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const val = e.target.value.toLowerCase().trim();
-      const filtered = allArticles.filter(a => {
-        const title = currentLang === 'ar' ? a.titleAr : a.titleEn;
-        const snippet = currentLang === 'ar' ? a.snippetAr : a.snippetEn;
-        return title.toLowerCase().includes(val) || snippet.toLowerCase().includes(val);
-      });
+      const filtered = allArticles.filter(a => 
+        a.title.toLowerCase().includes(val) || 
+        a.description.toLowerCase().includes(val)
+      );
       renderNews(filtered);
     });
 
