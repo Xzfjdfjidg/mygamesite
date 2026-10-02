@@ -32,7 +32,6 @@
       line-height: 1.6;
     }
 
-    /* إخفاء شريط قوقل المزعج بالأعلى */
     .goog-te-banner-frame, .skiptranslate, .goog-te-balloon-frame { display: none !important; }
     body { top: 0px !important; }
 
@@ -77,6 +76,26 @@
       min-width: 180px;
       font-size: 0.9rem;
       outline: none;
+    }
+
+    .lang-select-container {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .lang-select-container select {
+      background: transparent;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+      font-family: 'Inter', sans-serif;
     }
 
     main {
@@ -188,16 +207,14 @@
       margin-top: 0.8rem;
     }
 
-    #google_translate_element {
-      display: inline-block;
-    }
+    #google_translate_element { display: none; }
   </style>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'en',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        autoDisplay: false
       }, 'google_translate_element');
     }
   </script>
@@ -213,8 +230,22 @@
         <input type="text" id="searchInput" placeholder="ابحث عن خبر...">
       </div>
 
-      <!-- القائمة الرسمية لترجمة قوقل المستقرة -->
-      <div id="google_translate_element"></div>
+      <!-- قائمة اللغات الخاصة بك -->
+      <div class="lang-select-container">
+        🌐 <select id="languageSelect" onchange="changeLanguage(this.value)">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="ru">Русский</option>
+          <option value="zh-CN">中文</option>
+          <option value="ja">日本語</option>
+          <option value="tr">Türkçe</option>
+        </select>
+      </div>
     </div>
   </header>
 
@@ -222,6 +253,8 @@
     <div id="loader" class="loader">⏳ جاري تحميل الأخبار...</div>
     <div class="news-grid" id="newsGrid"></div>
   </main>
+
+  <div id="google_translate_element"></div>
 
   <script>
     const FEEDS = [
@@ -231,6 +264,21 @@
     ];
 
     let allArticles = [];
+
+    // تغيير اللغة عبر الـ Cookie الخاصة بقوقل مباشرة لضمان السرعة والثبات
+    function changeLanguage(langCode) {
+      document.cookie = `googtrans=/en/${langCode}; path=/;`;
+      document.cookie = `googtrans=/en/${langCode}; domain=.${location.hostname}; path=/;`;
+      
+      const htmlRoot = document.getElementById('htmlRoot');
+      if (langCode === 'ar') {
+        htmlRoot.setAttribute('dir', 'rtl');
+      } else {
+        htmlRoot.setAttribute('dir', 'ltr');
+      }
+
+      location.reload(); // إعادة تحميل خفيفة لتطبيق الترجمة الثابتة فوراً
+    }
 
     async function fetchAllNews() {
       const loader = document.getElementById('loader');
@@ -300,7 +348,7 @@
       }
     }
 
-    // البحث بدون إعادة تشغيل الترجمة حتى ما يختفي الكيبورد
+    // البحث السريع
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
@@ -312,6 +360,18 @@
         renderNews(filtered);
       });
     }
+
+    // قراءة اللغة الحالية من الكوكي وتحديد القائمة
+    window.addEventListener('DOMContentLoaded', () => {
+      const match = document.cookie.match(/googtrans=\/en\/([a-zA-Z-]+)/);
+      if (match && match[1]) {
+        const lang = match[1];
+        const select = document.getElementById('languageSelect');
+        if (select && select.querySelector(`option[value="${lang}"]`)) {
+          select.value = lang;
+        }
+      }
+    });
 
     fetchAllNews();
   </script>
