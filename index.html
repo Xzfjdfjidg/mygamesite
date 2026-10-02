@@ -32,6 +32,10 @@
       line-height: 1.6;
     }
 
+    /* إخفاء شريط قوقل المزعج بالأعلى */
+    .goog-te-banner-frame, .skiptranslate, .goog-te-balloon-frame { display: none !important; }
+    body { top: 0px !important; }
+
     header {
       background-color: #ffffff;
       position: sticky;
@@ -58,13 +62,8 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       flex-wrap: wrap;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 0.3rem;
     }
 
     .search-box input {
@@ -74,40 +73,10 @@
       border-radius: 20px;
       color: var(--text);
       font-family: inherit;
-      width: 160px;
+      width: 100%;
+      min-width: 180px;
       font-size: 0.9rem;
       outline: none;
-    }
-
-    .search-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 0.9rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .lang-select-container {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      background: #f1f5f9;
-      padding: 4px 8px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-    .lang-select-container select {
-      background: transparent;
-      border: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      cursor: pointer;
-      outline: none;
-      font-family: 'Inter', sans-serif;
     }
 
     main {
@@ -218,7 +187,21 @@
       font-weight: 600;
       margin-top: 0.8rem;
     }
+
+    #google_translate_element {
+      display: inline-block;
+    }
   </style>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
 
@@ -227,30 +210,16 @@
     
     <div class="header-actions">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search / ابحث...">
-        <button class="search-btn" onclick="executeSearch()">بحث</button>
+        <input type="text" id="searchInput" placeholder="ابحث عن خبر...">
       </div>
 
-      <div class="lang-select-container">
-        🌐 <select id="languageSelect" onchange="onLanguageChange(this.value)">
-          <option value="ar">العربية</option>
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-          <option value="it">Italiano</option>
-          <option value="pt">Português</option>
-          <option value="ru">Русский</option>
-          <option value="zh">中文</option>
-          <option value="ja">日本語</option>
-          <option value="tr">Türkçe</option>
-        </select>
-      </div>
+      <!-- القائمة الرسمية لترجمة قوقل المستقرة -->
+      <div id="google_translate_element"></div>
     </div>
   </header>
 
   <main>
-    <div id="loader" class="loader">⏳ جاري تحميل وتجهيز الأخبار...</div>
+    <div id="loader" class="loader">⏳ جاري تحميل الأخبار...</div>
     <div class="news-grid" id="newsGrid"></div>
   </main>
 
@@ -262,23 +231,9 @@
     ];
 
     let allArticles = [];
-    let currentTargetLang = 'ar';
-
-    // دالة ترجمة نصوص مباشرة باستخدام API مجاني وسريع
-    async function translateText(text, targetLang) {
-      if (!text || targetLang === 'en') return text;
-      try {
-        const res = await fetch(`https://lingva.ml/api/v1/en/${targetLang}/${encodeURIComponent(text)}`);
-        const data = await res.json();
-        return data.translation || text;
-      } catch (e) {
-        return text; // في حال تعذر السيرفر يرجع النص الاصلي بدون كراش
-      }
-    }
 
     async function fetchAllNews() {
       const loader = document.getElementById('loader');
-      loader.style.display = 'block';
 
       try {
         const requests = FEEDS.map(url => fetch(url).then(res => res.json()));
@@ -294,43 +249,14 @@
         });
 
         rawArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-        allArticles = rawArticles.slice(0, 12); // حصر العدد بـ 12 للسرعة والترجمة الأداء العالي
+        allArticles = rawArticles.slice(0, 18);
 
-        await processAndRenderNews(allArticles, currentTargetLang);
+        if (loader) loader.style.display = 'none';
+        renderNews(allArticles);
+
       } catch (err) {
         if (loader) loader.textContent = 'فشل تحميل الأخبار، يرجى تحديث الصفحة.';
       }
-    }
-
-    async function processAndRenderNews(items, lang) {
-      const loader = document.getElementById('loader');
-      if (loader) loader.style.display = 'block';
-
-      const htmlRoot = document.getElementById('htmlRoot');
-      if (lang === 'ar') {
-        htmlRoot.setAttribute('dir', 'rtl');
-      } else {
-        htmlRoot.setAttribute('dir', 'ltr');
-      }
-
-      // ترجمة الكروت معاً
-      const translatedItems = await Promise.all(items.map(async (item) => {
-        const cleanSnippet = (item.description || '').replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
-        
-        if (lang === 'en') {
-          return { ...item, translatedTitle: item.title, translatedSnippet: cleanSnippet };
-        }
-
-        const [tTitle, tSnippet] = await Promise.all([
-          translateText(item.title, lang),
-          translateText(cleanSnippet, lang)
-        ]);
-
-        return { ...item, translatedTitle: tTitle, translatedSnippet: tSnippet };
-      }));
-
-      if (loader) loader.style.display = 'none';
-      renderNews(translatedItems);
     }
 
     function renderNews(items) {
@@ -344,18 +270,20 @@
 
       grid.innerHTML = items.map((item, index) => {
         const imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80';
+        const cleanSnippet = (item.description || '').replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
+        const fullContent = (item.description || '').replace(/<[^>]*>?/gm, '');
 
         return `
           <div class="card" id="card-${index}">
             <img src="${imgUrl}" class="card-img" alt="News Image">
             <div class="card-content">
               <span class="badge">${item.source}</span>
-              <h3 class="card-title">${item.translatedTitle}</h3>
-              <p class="card-snippet">${item.translatedSnippet}</p>
+              <h3 class="card-title">${item.title}</h3>
+              <p class="card-snippet">${cleanSnippet}</p>
 
               <button class="read-more-btn" onclick="toggleDetails(${index})">التفاصيل / Details</button>
               <div class="full-details" id="details-${index}">
-                <p>${item.description.replace(/<[^>]*>?/gm, '')}</p>
+                <p>${fullContent}</p>
               </div>
 
               <span class="card-date">🕒 ${new Date(item.pubDate).toLocaleDateString()}</span>
@@ -372,26 +300,18 @@
       }
     }
 
-    function onLanguageChange(lang) {
-      currentTargetLang = lang;
-      processAndRenderNews(allArticles, lang);
+    // البحث بدون إعادة تشغيل الترجمة حتى ما يختفي الكيبورد
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase().trim();
+        const filtered = allArticles.filter(a => 
+          (a.title && a.title.toLowerCase().includes(val)) || 
+          (a.description && a.description.toLowerCase().includes(val))
+        );
+        renderNews(filtered);
+      });
     }
-
-    function executeSearch() {
-      const val = document.getElementById('searchInput').value.toLowerCase().trim();
-      const filtered = allArticles.filter(a => 
-        (a.title && a.title.toLowerCase().includes(val)) || 
-        (a.description && a.description.toLowerCase().includes(val))
-      );
-      processAndRenderNews(filtered, currentTargetLang);
-    }
-
-    // تشغيل البحث عند ضغط Enter في الكيبورد بدون ما ينغلق
-    document.getElementById('searchInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        executeSearch();
-      }
-    });
 
     fetchAllNews();
   </script>
