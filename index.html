@@ -1,3 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="tbyLldW9qxITtXjJCdgDSkZjbOzumEAeWOXRjlqXrtE" />
+  <title>ملعب | المركز الإخباري العالمي للألعاب</title>
+  
+  <script data-goatcounter="https://tryg.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .goog-te-banner-frame, .skiptranslate { display: none !important; }
+    body { top: 0px !important; }
+
+    header {
+      background-color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--primary); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box input {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      color: var(--text);
+      font-family: inherit;
+      width: 100%;
+      min-width: 200px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .lang-select-container {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .lang-select-container select {
+      background: transparent;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 4rem 1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+    }
+
+    .card-img {
+      width: 100%;
+      height: 185px;
+      object-fit: cover;
+      background-color: #e2e8f0;
+    }
+
+    .card-content {
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .badge {
+      align-self: flex-start;
+      background: #e0e7ff;
+      color: var(--primary);
+      padding: 0.2rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+      color: #1e293b;
+    }
+
+    .card-snippet {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .full-details {
+      display: none;
+      padding-top: 0.8rem;
+      margin-top: 0.8rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .read-more-btn {
+      align-self: flex-start;
+      background: #f1f5f9;
+      color: var(--primary);
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: auto;
+      transition: background 0.2s;
+    }
+    .read-more-btn:hover {
+      background: #e0e7ff;
+    }
+
+    .card-date {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-top: 0.8rem;
+    }
+
+    #google_translate_element { display: none; }
+  </style>
+
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+
+  <header>
+    <a href="#" class="logo">🎮 ملعب <span>Gaming</span></a>
+    
+    <div class="header-actions">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search / ابحث...">
+      </div>
+
+      <div class="lang-select-container">
+        🌐 <select id="languageSelect" onchange="changeLanguage(this.value)">
+          <option value="ar">Arabic</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="it">Italian</option>
+          <option value="pt">Portuguese</option>
+          <option value="ru">Russian</option>
+          <option value="zh-CN">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="tr">Turkish</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="loader" class="loader">⏳ Loading live games news...</div>
+    <div class="news-grid" id="newsGrid"></div>
+  </main>
+
+  <div id="google_translate_element"></div>
+
   <script>
     const FEEDS = [
       'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.ign.com%2Frss%2Farticles%2Ffeed%3Ftags%3Dgaming',
@@ -22,7 +271,7 @@
       const langCode = userLang.split('-')[0];
       
       const select = document.getElementById('languageSelect');
-      if (select.querySelector(`option[value="${langCode}"]`)) {
+      if (select && select.querySelector(`option[value="${langCode}"]`)) {
         select.value = langCode;
         changeLanguage(langCode);
       } else {
@@ -30,26 +279,25 @@
       }
     }
 
-    // تعديل دالة تغيير اللغة لتنتظر تحميل عنصر ترجمة قوقل بالكامل
     function changeLanguage(langCode) {
       const htmlRoot = document.getElementById('htmlRoot');
-      if (langCode === 'ar') {
-        htmlRoot.setAttribute('dir', 'rtl');
-      } else {
-        htmlRoot.setAttribute('dir', 'ltr');
+      if (htmlRoot) {
+        if (langCode === 'ar') {
+          htmlRoot.setAttribute('dir', 'rtl');
+        } else {
+          htmlRoot.setAttribute('dir', 'ltr');
+        }
       }
 
-      // مؤقت يفحص كل 100 ملّي ثانية هل أن عنصر قوقل ينوجد بالـ DOM أم لا
       let checkExist = setInterval(() => {
         const googleSelect = document.querySelector('.goog-te-combo');
         if (googleSelect) {
           googleSelect.value = langCode;
           googleSelect.dispatchEvent(new Event('change'));
-          clearInterval(checkExist); // نوقف الفحص أول ما نلقاه ونشغله
+          clearInterval(checkExist);
         }
       }, 100);
 
-      // إذا مرت 5 ثواني وما لگاه يوقف الفحص حتى ما يستهلك الميموري
       setTimeout(() => clearInterval(checkExist), 5000);
     }
 
@@ -62,7 +310,7 @@
 
         let rawArticles = [];
         results.forEach((data, index) => {
-          if (data.status === 'ok') {
+          if (data && data.status === 'ok') {
             const sourceName = index === 1 ? 'Xbox' : index === 2 ? 'PlayStation' : 'Global Gaming';
             const items = data.items.map(item => ({ ...item, source: sourceName }));
             rawArticles = rawArticles.concat(items);
@@ -72,20 +320,23 @@
         rawArticles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
         allArticles = rawArticles.slice(0, 18);
 
-        loader.style.display = 'none';
+        if (loader) loader.style.display = 'none';
         renderNews(allArticles);
 
-        // مهم جداً: بعد ما طبعنا الأخبار بالصفحة، نعيد تطبيق اللغة المختارة لترجمة العناصر الجديدة
-        const selectedLang = document.getElementById('languageSelect').value;
-        changeLanguage(selectedLang);
+        const langSelect = document.getElementById('languageSelect');
+        if (langSelect) {
+          changeLanguage(langSelect.value);
+        }
 
       } catch (err) {
-        loader.textContent = 'Failed to load news, please refresh.';
+        if (loader) loader.textContent = 'Failed to load news, please refresh.';
       }
     }
 
     function renderNews(items) {
       const grid = document.getElementById('newsGrid');
+      if (!grid) return;
+
       if (items.length === 0) {
         grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No news found.</p>';
         return;
@@ -93,8 +344,8 @@
 
       grid.innerHTML = items.map((item, index) => {
         const imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80';
-        const cleanSnippet = item.description.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
-        const fullContent = item.description.replace(/<[^>]*>?/gm, '');
+        const cleanSnippet = (item.description || '').replace(/<[^>]*>?/gm, '').substring(0, 110) + '...';
+        const fullContent = (item.description || '').replace(/<[^>]*>?/gm, '');
 
         return `
           <div class="card" id="card-${index}">
@@ -118,28 +369,16 @@
 
     function toggleDetails(index) {
       const details = document.getElementById(`details-${index}`);
-      if (details.style.display === 'block') {
-        details.style.display = 'none';
-      } else {
-        details.style.display = 'block';
+      if (details) {
+        if (details.style.display === 'block') {
+          details.style.display = 'none';
+        } else {
+          details.style.display = 'block';
+        }
       }
     }
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const val = e.target.value.toLowerCase().trim();
-      const filtered = allArticles.filter(a => 
-        a.title.toLowerCase().includes(val) || 
-        a.description.toLowerCase().includes(val)
-      );
-      renderNews(filtered);
-      
-      // حتى لما نفلتر الأخبار نضمن يرجع يترجم النازل الجديد
-      const selectedLang = document.getElementById('languageSelect').value;
-      changeLanguage(selectedLang);
-    });
-
-    fetchAllNews();
-  </script>
+    // تعديل كود البحث حتى يثبت الكيبورد وما يسد بوجهك
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
@@ -148,7 +387,11 @@
           (a.title && a.title.toLowerCase().includes(val)) || 
           (a.description && a.description.toLowerCase().includes(val))
         );
-        // نعيد عرض الأخبار المفلترة فقط بدون ما نغز ترجمة قوقل مع كل حرف
         renderNews(filtered);
       });
     }
+
+    fetchAllNews();
+  </script>
+</body>
+</html>
